@@ -1,0 +1,43 @@
+<nav class="bg-body-secondary sticky-top p-2">
+    <div class="container">
+        <div ngbDropdown #myDrop="ngbDropdown" autoClose="outside">
+            <div class="d-flex">
+                <div ngbDropdownToggle (click)="myDrop.open()"
+                    class="d-flex align-items-center bg-white px-3 search-container w-100">
+                    <i class="bi bi-search fs-6 text-secondary"></i>
+                    <input #searchInput class="form-control" id="dropdownSearch" type="search"
+                        [value]="selectedLeague?.strLeagueAlternate" placeholder="Search by league"
+                        (keyup)="search(searchInput.value)" (search)="search(searchInput.value)">
+                </div>
+                <button *ngIf="selectedLeague" type="button" class="btn btn-outline-secondary ms-1"
+                    (click)="cancel()">Cancel</button>
+            </div>
+
+            <div ngbDropdownMenu class="w-100 shadow-sm p-2" aria-labelledby="dropdownSearch">
+                <div class="w-100 p-2 league-list">
+                    <ng-container *ngIf="allLeagues.length > 0 ; else noMatch">
+                        <div *ngFor="let league of allLeagues" class="league-item"
+                            (click)="myDrop.close(); getTeams(league)">
+                            {{league.strLeagueAlternate}}
+                        </div>
+                    </ng-container>
+                    <ng-template #noMatch>
+                        <span>No result</span>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="container p-3">
+    <div *ngIf="loading; else showLeagues" class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <ng-template #showLeagues>
+        <div class="d-flex cards">
+            <app-team-card *ngFor="let team of teams" [team]="team">
+            </app-team-card>
+        </div>
+    </ng-template>
+</main>
